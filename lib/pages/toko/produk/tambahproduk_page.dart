@@ -19,433 +19,225 @@ import '../../../widgets/big_text.dart';
 import '../../../widgets/input_text_field.dart';
 import 'dart:io';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-class TambahProdukPage extends StatelessWidget {
+
+class TambahProdukPage extends StatefulWidget {
   const TambahProdukPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var NamaProdukController = TextEditingController();
-    var DeskripsiProdukController = TextEditingController();
-    var HargaController = TextEditingController();
-    var BeratController = TextEditingController();
-    var StokController = TextEditingController();
-    var KategoriController = TextEditingController();
+  State<TambahProdukPage> createState() => _TambahProdukPageState();
+}
 
-    Future<void> _tambahProduk() async {
-      String namaproduk = NamaProdukController.text.trim();
-      String deskripsi = DeskripsiProdukController.text.trim();
-      int harga = int.parse(HargaController.text.trim());
-      int berat = int.parse(BeratController.text.trim());
-      int stok = int.parse(StokController.text.trim());
-      String kategori = KategoriController.text.trim();
+class _TambahProdukPageState extends State<TambahProdukPage> {
+  final NamaProdukController = TextEditingController();
+  final DeskripsiProdukController = TextEditingController();
+  final HargaController = TextEditingController();
+  final BeratController = TextEditingController();
+  final StokController = TextEditingController();
+  final KategoriController = TextEditingController();
 
-      if (namaproduk.isEmpty) {
-        AwesomeSnackbarButton("Warning","Nama produk masih kosong",ContentType.warning);
-      } else if (deskripsi.isEmpty) {
-        AwesomeSnackbarButton("Warning","Deskripsi masih kosong",ContentType.warning);
-      } else if (harga == null) {
-        AwesomeSnackbarButton("Warning","Harga masih kosong",ContentType.warning);
-      } else if (stok == null) {
-        AwesomeSnackbarButton("Warning","Stok masih kosong",ContentType.warning);
-      } else if (berat == null) {
-        AwesomeSnackbarButton("Warning","Berat masih kosong",ContentType.warning);
-      } else if (kategori.isEmpty) {
-        AwesomeSnackbarButton("Warning","Kategori masih kosong",ContentType.warning);
-      } else if (Get.find<ProdukController>().pickedFileGambarProduk1 == null) {
-        AwesomeSnackbarButton("Warning","Gambar 1 masih kosong",ContentType.warning);
-      } else if (Get.find<ProdukController>().pickedFileGambarProduk2 == null) {
-        AwesomeSnackbarButton("Warning","Gambar 2 masih kosong",ContentType.warning);
-      } else if (Get.find<ProdukController>().pickedFileGambarProduk3 == null) {
-        AwesomeSnackbarButton("Warning","Gambar 3 masih kosong",ContentType.warning);
-      } else {
-        int harga = int.parse(HargaController.text.trim());
-        int berat = int.parse(BeratController.text.trim());
-        int stok = int.parse(StokController.text.trim());
+  bool _isLoading = false;
 
-        var userController = Get.find<UserController>().usersList[0];
-        var controller = Get.find<ProdukController>();
-        controller
-            .tambahProduk(userController.id, namaproduk, deskripsi, harga,
-                berat, kategori, stok)
-            .then((status) async {});
-      }
+  Future<void> _tambahProduk() async {
+    if (_isLoading) return;
+
+    String namaproduk = NamaProdukController.text.trim();
+    String deskripsi = DeskripsiProdukController.text.trim();
+    String kategori = KategoriController.text.trim();
+
+    int? harga = int.tryParse(HargaController.text.trim());
+    int? berat = int.tryParse(BeratController.text.trim());
+    int? stok = int.tryParse(StokController.text.trim());
+
+    var controller = Get.find<ProdukController>();
+
+    if (namaproduk.isEmpty) {
+      AwesomeSnackbarButton("Warning", "Nama produk masih kosong", ContentType.warning);
+    } else if (deskripsi.isEmpty) {
+      AwesomeSnackbarButton("Warning", "Deskripsi masih kosong", ContentType.warning);
+    } else if (harga == null) {
+      AwesomeSnackbarButton("Warning", "Harga tidak valid", ContentType.warning);
+    } else if (stok == null) {
+      AwesomeSnackbarButton("Warning", "Stok tidak valid", ContentType.warning);
+    } else if (berat == null) {
+      AwesomeSnackbarButton("Warning", "Berat tidak valid", ContentType.warning);
+    } else if (kategori.isEmpty) {
+      AwesomeSnackbarButton("Warning", "Kategori masih kosong", ContentType.warning);
+    } else if (controller.pickedFileGambarProduk1 == null ||
+        controller.pickedFileGambarProduk2 == null ||
+        controller.pickedFileGambarProduk3 == null) {
+      AwesomeSnackbarButton("Warning", "Semua gambar harus diisi", ContentType.warning);
+    } else {
+      setState(() {
+        _isLoading = true;
+      });
+
+      var user = Get.find<UserController>().usersList[0];
+      await controller.tambahProduk(
+        user.id, namaproduk, deskripsi, harga, berat, kategori, stok,
+      );
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      // Arahkan atau tampilkan pesan berhasil jika perlu
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         body: SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: EdgeInsets.only(top: Dimensions.height30, left: Dimensions.width10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Get.to(HomeTokoPage(
-                        initialIndex:
-                            1)); // Pass the initial index to the HomeTokoPage constructor
-                  },
-                  child: AppIcon(
-                    icon: Icons.arrow_back,
-                    iconColor: AppColors.redColor,
-                    backgroundColor: Colors.white,
-                    iconSize: Dimensions.iconSize24,
-                  ),
-                ),
-                SizedBox(
-                  width: Dimensions.width10,
-                ),
-                Container(
-                  child: BigText(
-                    text: "Tambah Produk",
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: Dimensions.height20,
-          ),
-
-          // Nama Produk
-          Container(
-            padding: EdgeInsets.only(
-                left: Dimensions.width20,
-                right: Dimensions.width20,
-                bottom: Dimensions.height10),
-            child: BigText(
-              text: "Nama Produk",
-              size: Dimensions.font16,
-            ),
-          ),
-          InputTextField(
-            textController: NamaProdukController,
-            hintText: 'Nama Produk',
-          ),
-          SizedBox(
-            height: Dimensions.height20,
-          ),
-
-          //Kategori
-          Container(
-            padding: EdgeInsets.only(
-                left: Dimensions.width20,
-                right: Dimensions.width20,
-                bottom: Dimensions.height10),
-            child: BigText(
-              text: "Kategori",
-              size: Dimensions.font16,
-            ),
-          ),
-          AppDropdownFieldKategori(
-            hintText: 'Kategori',
-            controller: KategoriController,
-          ),
-          SizedBox(
-            height: Dimensions.height20,
-          ),
-
-          //Deskripsi Produk
-          Container(
-            padding: EdgeInsets.only(
-                left: Dimensions.width20,
-                right: Dimensions.width20,
-                bottom: Dimensions.height10),
-            child: BigText(
-              text: "Deskripsi Produk",
-              size: Dimensions.font16,
-            ),
-          ),
-          InputTextField(
-            textController: DeskripsiProdukController,
-            hintText: 'Deskripsi Produk',
-          ),
-          SizedBox(
-            height: Dimensions.height20,
-          ),
-
-          //Harga
-          Container(
-            padding: EdgeInsets.only(
-                left: Dimensions.width20,
-                right: Dimensions.width20,
-                bottom: Dimensions.height10),
-            child: BigText(
-              text: "Harga",
-              size: Dimensions.font16,
-            ),
-          ),
-          InputTextField(
-            textController: HargaController,
-            hintText: 'Harga',
-            textInputType: TextInputType.number,
-          ),
-          SizedBox(
-            height: Dimensions.height20,
-          ),
-
-          //Gambar Produk
-          Container(
-            padding: EdgeInsets.only(
-                left: Dimensions.width20,
-                right: Dimensions.width20,
-                bottom: Dimensions.height10),
-            child: BigText(
-              text: "Gambar Produk",
-              size: Dimensions.font16,
-            ),
-          ),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GetBuilder<ProdukController>(builder: (controller) {
-                return Column(
+              // Header
+              Container(
+                margin: EdgeInsets.only(top: Dimensions.height30, left: Dimensions.width10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     GestureDetector(
                       onTap: () {
-                        controller.pickImageGambarProduk1();
+                        Get.to(HomeTokoPage(initialIndex: 1));
                       },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            left: Dimensions.width20,
-                            right: Dimensions.width20,
-                            bottom: Dimensions.height20),
-                        padding: EdgeInsets.only(
-                            left: Dimensions.width20,
-                            right: Dimensions.width20,
-                            top: Dimensions.height20,
-                            bottom: Dimensions.height20),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.circular(Dimensions.radius20),
-                            boxShadow: [
-                              BoxShadow(
-                                  blurRadius: 10,
-                                  spreadRadius: 7,
-                                  offset: Offset(1, 1),
-                                  color: Colors.grey.withOpacity(0.2))
-                            ]),
-                        child: Icon(
-                          Icons.add,
-                          color: AppColors.redColor,
-                        ),
+                      child: AppIcon(
+                        icon: Icons.arrow_back,
+                        iconColor: AppColors.redColor,
+                        backgroundColor: Colors.white,
+                        iconSize: Dimensions.iconSize24,
                       ),
                     ),
-                    controller.pickedFileGambarProduk1 != null
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.file(
-                                //to show image, you type like this.
-                                File(controller.pickedFileGambarProduk1!.path),
-                                fit: BoxFit.cover,
-                                width: Dimensions.width45 * 2,
-                                height: Dimensions.height45 * 2,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            "Tidak Ada Gambar",
-                            style: TextStyle(fontSize: Dimensions.font16 / 2),
-                          ),
+                    SizedBox(width: Dimensions.width10),
+                    BigText(text: "Tambah Produk", fontWeight: FontWeight.bold),
                   ],
-                );
-              }),
-              GetBuilder<ProdukController>(builder: (controller) {
-                return Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        controller.pickImageGambarProduk2();
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            left: Dimensions.width20,
-                            right: Dimensions.width20,
-                            bottom: Dimensions.height20),
-                        padding: EdgeInsets.only(
-                            left: Dimensions.width20,
-                            right: Dimensions.width20,
-                            top: Dimensions.height20,
-                            bottom: Dimensions.height20),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.circular(Dimensions.radius20),
-                            boxShadow: [
-                              BoxShadow(
-                                  blurRadius: 10,
-                                  spreadRadius: 7,
-                                  offset: Offset(1, 1),
-                                  color: Colors.grey.withOpacity(0.2))
-                            ]),
-                        child: Icon(
-                          Icons.add,
-                          color: AppColors.redColor,
-                        ),
-                      ),
-                    ),
-                    controller.pickedFileGambarProduk2 != null
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.file(
-                                //to show image, you type like this.
-                                File(controller.pickedFileGambarProduk2!.path),
-                                fit: BoxFit.cover,
-                                width: Dimensions.width45 * 2,
-                                height: Dimensions.height45 * 2,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            "Tidak Ada Gambar",
-                            style: TextStyle(fontSize: Dimensions.font16 / 2),
-                          ),
-                  ],
-                );
-              }),
-              GetBuilder<ProdukController>(builder: (controller) {
-                return Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        controller.pickImageGambarProduk3();
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            left: Dimensions.width20,
-                            right: Dimensions.width20,
-                            bottom: Dimensions.height20),
-                        padding: EdgeInsets.only(
-                            left: Dimensions.width20,
-                            right: Dimensions.width20,
-                            top: Dimensions.height20,
-                            bottom: Dimensions.height20),
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.circular(Dimensions.radius20),
-                            boxShadow: [
-                              BoxShadow(
-                                  blurRadius: 10,
-                                  spreadRadius: 7,
-                                  offset: Offset(1, 1),
-                                  color: Colors.grey.withOpacity(0.2))
-                            ]),
-                        child: Icon(
-                          Icons.add,
-                          color: AppColors.redColor,
-                        ),
-                      ),
-                    ),
-                    controller.pickedFileGambarProduk3 != null
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
-                              child: Image.file(
-                                //to show image, you type like this.
-                                File(controller.pickedFileGambarProduk3!.path),
-                                fit: BoxFit.cover,
-                                width: Dimensions.width45 * 2,
-                                height: Dimensions.height45 * 2,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            "Tidak Ada Gambar",
-                            style: TextStyle(fontSize: Dimensions.font16 / 2),
-                          ),
-                  ],
-                );
-              }),
-            ],
-          ),
+                ),
+              ),
 
-          //Berat
-          SizedBox(
-            height: Dimensions.height20,
-          ),
-          Container(
-            padding: EdgeInsets.only(
-                left: Dimensions.width20,
-                right: Dimensions.width20,
-                bottom: Dimensions.height10),
-            child: BigText(
-              text: "Berat",
-              size: Dimensions.font16,
-            ),
-          ),
-          InputTextField(
-            textController: BeratController,
-            hintText: 'Berat',
-            textInputType: TextInputType.number,
-          ),
-          SizedBox(
-            height: Dimensions.height10,
-          ),
-          Container(
-              padding: EdgeInsets.only(
-                  left: Dimensions.width20,
-                  right: Dimensions.width20,
-                  bottom: Dimensions.height10),
-            child: SmallText(text: "Berat dihitung dalam gram (gr)."),
-          ),
-          SizedBox(
-            height: Dimensions.height20,
-          ),
+              SizedBox(height: Dimensions.height20),
 
-          //Stok
-          Container(
-            padding: EdgeInsets.only(
-                left: Dimensions.width20,
-                right: Dimensions.width20,
-                bottom: Dimensions.height10),
-            child: BigText(
-              text: "Stok",
-              size: Dimensions.font16,
-            ),
-          ),
-          InputTextField(
-            textController: StokController,
-            hintText: 'Stok',
-            textInputType: TextInputType.number,
-          ),
-          SizedBox(
-            height: Dimensions.height20,
-          ),
+              // Input Fields
+              _buildLabel("Nama Produk"),
+              InputTextField(textController: NamaProdukController, hintText: 'Nama Produk'),
 
-          Center(
-            child: GestureDetector(
-                onTap: () {
-                  _tambahProduk();
-                },
-                child: Container(
+              _buildLabel("Kategori"),
+              AppDropdownFieldKategori(hintText: 'Kategori', controller: KategoriController),
+
+              _buildLabel("Deskripsi Produk"),
+              InputTextField(textController: DeskripsiProdukController, hintText: 'Deskripsi Produk'),
+
+              _buildLabel("Harga"),
+              InputTextField(textController: HargaController, hintText: 'Harga', textInputType: TextInputType.number),
+
+              _buildLabel("Gambar Produk"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildImagePicker(1),
+                  _buildImagePicker(2),
+                  _buildImagePicker(3),
+                ],
+              ),
+
+              _buildLabel("Berat"),
+              InputTextField(textController: BeratController, hintText: 'Berat', textInputType: TextInputType.number),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dimensions.width20),
+                child: SmallText(text: "Berat dihitung dalam gram (gr)."),
+              ),
+
+              SizedBox(height: Dimensions.height20),
+
+              _buildLabel("Stok"),
+              InputTextField(textController: StokController, hintText: 'Stok', textInputType: TextInputType.number),
+
+              SizedBox(height: Dimensions.height20),
+
+              Center(
+                child: _isLoading
+                    ? CircularProgressIndicator(color: AppColors.redColor)
+                    : GestureDetector(
+                  onTap: _tambahProduk,
+                  child: Container(
                     width: Dimensions.width45 * 3,
                     height: Dimensions.height45,
                     margin: EdgeInsets.only(bottom: Dimensions.height10),
                     decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(Dimensions.radius20/2),
-                        color: AppColors.redColor),
+                      borderRadius: BorderRadius.circular(Dimensions.radius20 / 2),
+                      color: AppColors.redColor,
+                    ),
                     child: Center(
-                      child: BigText(
-                        text: "Tambah",
-                        color: Colors.white,
-                      ),
-                    ))),
+                      child: BigText(text: "Tambah", color: Colors.white),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ));
+  }
+
+  Widget _buildLabel(String text) {
+    return Container(
+      padding: EdgeInsets.only(
+          left: Dimensions.width20, right: Dimensions.width20, bottom: Dimensions.height10),
+      child: BigText(text: text, size: Dimensions.font16),
+    );
+  }
+
+  Widget _buildImagePicker(int index) {
+    return GetBuilder<ProdukController>(builder: (controller) {
+      final imageFile = index == 1
+          ? controller.pickedFileGambarProduk1
+          : index == 2
+          ? controller.pickedFileGambarProduk2
+          : controller.pickedFileGambarProduk3;
+
+      final pickImageFn = index == 1
+          ? controller.pickImageGambarProduk1
+          : index == 2
+          ? controller.pickImageGambarProduk2
+          : controller.pickImageGambarProduk3;
+
+      return Column(
+        children: [
+          GestureDetector(
+            onTap: pickImageFn,
+            child: Container(
+              margin: EdgeInsets.all(Dimensions.width10),
+              padding: EdgeInsets.all(Dimensions.width20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(Dimensions.radius20),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 10,
+                    spreadRadius: 7,
+                    offset: Offset(1, 1),
+                    color: Colors.grey.withOpacity(0.2),
+                  )
+                ],
+              ),
+              child: Icon(Icons.add, color: AppColors.redColor),
+            ),
+          ),
+          imageFile != null
+              ? ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.file(
+              File(imageFile.path),
+              fit: BoxFit.cover,
+              width: Dimensions.width45 * 2,
+              height: Dimensions.height45 * 2,
+            ),
           )
+              : Text(
+            "Tidak Ada Gambar",
+            style: TextStyle(fontSize: Dimensions.font16 / 2),
+          ),
         ],
-      ),
-    ));
+      );
+    });
   }
 }

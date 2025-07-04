@@ -7,11 +7,18 @@ import 'package:flutter/services.dart';
 class AppTextField extends StatelessWidget {
   final TextEditingController textController;
   final String hintText;
-  final IconData icon;
+  final IconData? icon;
   final TextInputType textInputType;
+  final bool isObscure;
 
-  bool isObscure;
-  AppTextField({Key? key, required this.textController, required this.hintText, required this.icon, this.isObscure = false, this.textInputType = TextInputType.text}) : super(key: key);
+  AppTextField({
+    Key? key,
+    required this.textController,
+    required this.hintText,
+    this.icon,
+    this.isObscure = false,
+    this.textInputType = TextInputType.text,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,45 +27,53 @@ class AppTextField extends StatelessWidget {
         : null;
 
     return Container(
-      margin: EdgeInsets.only(left: Dimensions.height20, right: Dimensions.height20),
-      decoration: BoxDecoration(
-          color : Colors.white,
-          borderRadius: BorderRadius.circular(Dimensions.radius20),
-          boxShadow: [
-            BoxShadow(
-                blurRadius: 10,
-                spreadRadius: 7,
-                offset: Offset(1, 1),
-                color: Colors.grey.withOpacity(0.2)
-            )
-          ]
+      margin: EdgeInsets.symmetric(
+        horizontal: Dimensions.width20,
+        vertical: Dimensions.height10 / 1.5,
       ),
-      child: TextField(
-        keyboardType: textInputType,
-        inputFormatters: inputFormatters,
-        obscureText: isObscure?true:false,
-        controller: textController,
-        decoration: InputDecoration(
-            hintText: hintText,
-            prefixIcon: Icon(icon, color: AppColors.redColor,),
-            focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: BorderSide(
-                    width: 1.0,
-                    color: AppColors.redColor
-                )
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Optional label text (if needed, you can pass label as new parameter)
+          // Text(
+          //   "Username/Email *",
+          //   style: TextStyle(
+          //     fontWeight: FontWeight.w600,
+          //     fontSize: Dimensions.font16,
+          //     color: Colors.black87,
+          //   ),
+          // ),
+          // SizedBox(height: 6),
+
+          TextField(
+            controller: textController,
+            obscureText: isObscure,
+            keyboardType: textInputType,
+            inputFormatters: inputFormatters,
+            style: TextStyle(fontSize: Dimensions.font16),
+            decoration: InputDecoration(
+              hintText: hintText,
+              contentPadding:
+              EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+              filled: true,
+              fillColor: Colors.white,
+              prefixIcon: icon != null
+                  ? Icon(icon, color: AppColors.redColor)
+                  : null,
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(28),
+                borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(28),
+                borderSide: BorderSide(color: AppColors.redColor, width: 1.5),
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(28),
+              ),
             ),
-            enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Dimensions.radius15),
-                borderSide: BorderSide(
-                    width: 1.0,
-                    color: Colors.white
-                )
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-            )
-        ),
+          ),
+        ],
       ),
     );
   }

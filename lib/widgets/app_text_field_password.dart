@@ -27,26 +27,24 @@ class _AppTextFieldPasswordState extends State<AppTextFieldPassword> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: Dimensions.height20, right: Dimensions.height20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Dimensions.radius20/2),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 10,
-            spreadRadius: 7,
-            offset: Offset(1, 1),
-            color: Colors.grey.withOpacity(0.2),
-          ),
-        ],
+      margin: EdgeInsets.symmetric(
+        horizontal: Dimensions.width20,
+        vertical: Dimensions.height10 / 1.5,
       ),
       child: TextField(
-        keyboardType: widget.textInputType,
-        obscureText: isObscure,
         controller: widget.textController,
+        obscureText: isObscure,
+        keyboardType: widget.textInputType,
+        style: TextStyle(fontSize: Dimensions.font16),
         decoration: InputDecoration(
           hintText: widget.hintText,
-          prefixIcon: widget.icon == null ? null : Icon(widget.icon, color: AppColors.redColor,),
+          contentPadding:
+          EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+          filled: true,
+          fillColor: Colors.white,
+          prefixIcon: widget.icon != null
+              ? Icon(widget.icon, color: AppColors.redColor)
+              : null,
           suffixIcon: IconButton(
             icon: Icon(
               isObscure ? Icons.visibility_off : Icons.visibility,
@@ -58,25 +56,20 @@ class _AppTextFieldPasswordState extends State<AppTextFieldPassword> {
               });
             },
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(
-              width: 1.0,
-              color: AppColors.redColor,
-            ),
-          ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
-            borderSide: BorderSide(
-              width: 1.0,
-              color: Colors.white,
-            ),
+            borderRadius: BorderRadius.circular(28),
+            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(28),
+            borderSide: BorderSide(color: AppColors.redColor, width: 1.5),
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(Dimensions.radius15),
+            borderRadius: BorderRadius.circular(28),
           ),
         ),
       ),
     );
   }
 }
+

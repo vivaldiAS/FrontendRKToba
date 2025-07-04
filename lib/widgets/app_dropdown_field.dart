@@ -7,82 +7,71 @@ import '../utils/dimensions.dart';
 class AppDropdownField extends StatefulWidget {
   final String? hintText;
   final IconData? icon;
-  final bool isObscure;
   final TextEditingController controller;
 
-  const AppDropdownField({Key? key, this.hintText, this.icon, required this.controller, this.isObscure = false}) : super(key: key);
+  const AppDropdownField({
+    Key? key,
+    this.hintText,
+    this.icon,
+    required this.controller,
+  }) : super(key: key);
 
   @override
-  _AppDropdownState createState() => _AppDropdownState();
+  _AppDropdownFieldState createState() => _AppDropdownFieldState();
 }
 
-class _AppDropdownState extends State<AppDropdownField> {
-  String? dropdownValue ;
+class _AppDropdownFieldState extends State<AppDropdownField> {
+  String? dropdownValue;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: Dimensions.height20, right: Dimensions.height20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(Dimensions.radius20 / 2),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 10,
-            spreadRadius: 7,
-            offset: Offset(1, 1),
-            color: Colors.grey.withOpacity(0.2),
-          ),
-        ],
+      margin: EdgeInsets.symmetric(
+        horizontal: Dimensions.width20,
+        vertical: Dimensions.height10 / 1.5,
       ),
       child: DropdownButtonHideUnderline(
-        child: DropdownButtonFormField(
+        child: DropdownButtonFormField<String>(
           decoration: InputDecoration(
             hintText: widget.hintText,
-            prefixIcon: widget.icon == null ? null : Icon(widget.icon, color: AppColors.redColor,),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(
-                width: 1.0,
-                color: AppColors.redColor,
-              ),
-            ),
+            contentPadding:
+            EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+            filled: true,
+            fillColor: Colors.white,
+            prefixIcon: widget.icon != null
+                ? Icon(widget.icon, color: AppColors.redColor)
+                : null,
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
-              borderSide: BorderSide(
-                width: 1.0,
-                color: Colors.white,
-              ),
+              borderRadius: BorderRadius.circular(28),
+              borderSide:
+              BorderSide(color: Colors.grey.shade300, width: 1),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(28),
+              borderSide: BorderSide(color: AppColors.redColor, width: 1.5),
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(Dimensions.radius15),
+              borderRadius: BorderRadius.circular(28),
             ),
           ),
-          value: widget.controller.text.isNotEmpty ? widget.controller.text : null,
+          value: widget.controller.text.isNotEmpty
+              ? widget.controller.text
+              : null,
           onChanged: (String? newValue) {
             setState(() {
-              dropdownValue = newValue!;
+              dropdownValue = newValue;
+              widget.controller.text = newValue!;
             });
-            widget.controller.text = newValue!;
           },
           items: <String>['Laki-laki', 'Perempuan']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: IntrinsicWidth(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(value),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }).toList(),
+              .map((value) => DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          ))
+              .toList(),
         ),
       ),
     );
-
   }
 }
+

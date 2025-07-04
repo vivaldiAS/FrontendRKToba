@@ -66,81 +66,101 @@ class _HomePageBodyState extends State<HomePageBody> {
         child: Column(
           children: [
             CarouselWidget(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: Dimensions.width20),
+              width: Dimensions.screenWidth / 1.8,
+              child: BigText(
+                text: "Kategori",
+                fontWeight: FontWeight.bold,
+                size: Dimensions.font16,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Get.to(ProdukUnggulanPage());
+              },
+              child: Container(
+                  width: Dimensions.screenWidth / 4,
+                  height: Dimensions.height45,
+                  margin: EdgeInsets.only(right: Dimensions.width20),
+                  child: Center(
+                      child: BigText(
+                          text: "Lihat Semua",
+                          size: Dimensions.font20 / 1.5,
+                          color: AppColors.redColor,
+                          fontWeight: FontWeight.bold)
+                  )),
+            ),
+          ],
+        ),
             GetBuilder<PopularProdukController>(builder: (_produkController) {
+
               return Container(
-                  // height: Dimensions.height45 * 5,
-                  margin: EdgeInsets.only(
-                      left: Dimensions.width20,
-                      right: Dimensions.width20,
-                      bottom: Dimensions.height10),
-                  child: GridView.count(
-                      crossAxisCount: 4,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        CardKategori(kategori: "Makanan"),
-                        CardKategori(kategori: "Minuman"),
-                        CardKategori(kategori: "Pakaian"),
-                        CardKategori(kategori: "Ulos"),
-                        CardKategori(kategori: "Souvenir"),
-                        CardKategori(kategori: "Perlengkapan Rumah"),
-                        CardKategori(kategori: "Non Halal"),
-                        Container(
-                          width: 200,
-                          height: 200,
+
+                margin: EdgeInsets.only(
+                  // top: Dimensions.width20,
+                    left: Dimensions.width20,
+                    right: Dimensions.width20,
+                    bottom: Dimensions.width20),
+                height: Dimensions.height45 * 2.2, // tinggi yang cukup agar tidak terpotong
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      CardKategori(kategori: "Makanan"),
+                      SizedBox(width: 10),
+                      CardKategori(kategori: "Minuman"),
+                      SizedBox(width: 10),
+                      CardKategori(kategori: "Pakaian"),
+                      SizedBox(width: 10),
+                      CardKategori(kategori: "Ulos"),
+                      SizedBox(width: 10),
+                      CardKategori(kategori: "Souvenir"),
+                      SizedBox(width: 10),
+                      CardKategori(kategori: "Perlengkapan Rumah"),
+                      SizedBox(width: 10),
+                      CardKategori(kategori: "Non Halal"),
+                      SizedBox(width: 10),
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => HomePage(initialIndex: 1));
+                        },
+                        child: Container(
+                          width: 90,
+                          padding: EdgeInsets.symmetric(
+                            vertical: Dimensions.height10,
+                            horizontal: Dimensions.width10,
+                          ),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                spreadRadius: 1,
-                                blurRadius: 5,
-                                offset: Offset(0, 2),
-                              )
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                CupertinoIcons.rectangle_grid_2x2_fill,
+                                color: AppColors.redColor,
+                                size: Dimensions.iconSize24,
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                "Lihat Semua",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: Dimensions.font16),
+                              ),
                             ],
                           ),
-                          child: GestureDetector(
-                            onTap: () {
-                              Get.to(
-                                () => HomePage(initialIndex: 1),
-                              );
-                            },
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                //image section
-                                Container(
-                                  height: 40,
-                                  width: 40,
-                                  margin: EdgeInsets.only(
-                                      left: Dimensions.width10 / 2,
-                                      right: Dimensions.width10 / 2,
-                                      top: Dimensions.height10 / 2,
-                                      bottom: Dimensions.height10 / 2),
-                                  child: Icon(
-                                    CupertinoIcons.rectangle_grid_2x2_fill,
-                                    color: AppColors.redColor,
-                                    size: Dimensions.iconSize24,
-                                  ),
-                                ),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text("Lihat Semua",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: Dimensions.height20 / 2))
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ]));
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+
             }),
             SizedBox(
               height: Dimensions.height10,

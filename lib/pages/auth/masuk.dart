@@ -43,7 +43,7 @@ class _MasukState extends State<Masuk> {
           Get.toNamed(RouteHelper.getInitial());
         } else {
           AwesomeSnackbarButton(
-              "Gagal", status?.message ?? "Gagal", ContentType.failure);
+              "Gagal", "Username atau password Anda salah", ContentType.failure);
         }
       });
     }
@@ -136,23 +136,6 @@ class _MasukState extends State<Masuk> {
                         icon: Icons.lock,
                       ),
                       SizedBox(height: Dimensions.height10),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: _launchForgotPasswordURL,
-                          child: Padding(
-                            padding: EdgeInsets.only(right: Dimensions.width10),
-                            child: Text(
-                              "Lupa Password?",
-                              style: TextStyle(
-                                color: AppColors.redColor,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                       SizedBox(
                         height: Dimensions.height20,
                       ),
@@ -164,11 +147,11 @@ class _MasukState extends State<Masuk> {
                           _login(authController);
                         },
                         child: Container(
-                            width: Dimensions.width45 * 3,
+                            width: Dimensions.width45 * 7.5,
                             height: Dimensions.height45,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(
-                                    Dimensions.radius20 / 2),
+                                    Dimensions.radius20 ),
                                 color: AppColors.redColor),
                             child: Center(
                               child: BigText(
@@ -178,11 +161,31 @@ class _MasukState extends State<Masuk> {
                             )),
                       ),
                       SizedBox(
-                        height: Dimensions.height10,
+                        height: Dimensions.height15,
+                      ),
+                      Align(
+                        alignment: Alignment.center,
+                        child: GestureDetector(
+                          onTap: _launchForgotPasswordURL,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: Dimensions.width10),
+                            child: Text(
+                              "Lupa Kata Sandi?",
+                              style: TextStyle(
+                                color: AppColors.redColor,
+                                fontWeight: FontWeight.bold,
+                                // decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: Dimensions.height20,
                       ),
                       RichText(
                           text: TextSpan(
-                              text: "Tidak memiliki Akun? ",
+                              text: "Belum memiliki Akun? ",
                               style: TextStyle(
                                   color: Colors.grey[500],
                                   fontSize: Dimensions.font16),
@@ -191,7 +194,7 @@ class _MasukState extends State<Masuk> {
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () => Get.to(() => Register(),
                                           transition: Transition.fadeIn),
-                                    text: "Daftar",
+                                    text: "Daftar di sini",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black,
@@ -200,6 +203,7 @@ class _MasukState extends State<Masuk> {
                       SizedBox(
                         height: Dimensions.height15,
                       ),
+
                     ],
                   )
                       : Container(

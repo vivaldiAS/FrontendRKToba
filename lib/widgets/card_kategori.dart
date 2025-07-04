@@ -23,19 +23,19 @@ class CardKategori extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<PopularProdukController>(builder: (_produkController) {
       return Container(
-        width: 200,
+        width: 100,
         height: 200,
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.4),
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: Offset(0, 2),
-            )
-          ],
+          borderRadius: BorderRadius.circular(5),
+          // boxShadow: [
+          //   BoxShadow(
+          //     color: Colors.grey.withOpacity(0.4),
+          //     spreadRadius: 1,
+          //     blurRadius: 5,
+          //     offset: Offset(0, 2),
+          //   )
+          // ],
         ),
         child: GestureDetector(
           onTap: () {

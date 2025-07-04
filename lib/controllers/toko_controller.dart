@@ -387,6 +387,7 @@ class TokoController extends GetxController {
 
       if (token.isEmpty) {
         print("Token tidak tersedia");
+        _profilTokoList.clear();
         _isLoading = false;
         update();
         return;
@@ -394,21 +395,24 @@ class TokoController extends GetxController {
 
       Response response = await tokoRepo.profilTokoWithToken(token);
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.body != null) {
         var data = response.body;
         _profilTokoList.clear();
         Toko toko = Toko.fromJson(data);
         _profilTokoList.add(toko);
       } else {
         print("Gagal fetch profil toko via token, status: ${response.statusCode}");
+        _profilTokoList.clear();
       }
     } catch (e) {
       print("Exception profilTokoViaToken: $e");
+      _profilTokoList.clear();
     }
 
     _isLoading = false;
     update();
   }
+
 
 
   Future<void> homeToko() async {

@@ -49,10 +49,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.RumahKreatifTobaMobile.rumah_kreatif_toba"
-        minSdkVersion 19
+        applicationId "com.rktobamobile.rumah_kreatif_toba"
+        minSdkVersion 21
         targetSdkVersion 34      // Ubah targetSdkVersion menjadi 34
-        versionCode flutterVersionCode.toInteger()
+//        versionCode flutterVersionCode.toInteger()
+        versionCode 9
         versionName flutterVersionName
     }
 

@@ -3,9 +3,9 @@ class AppConstants {
   static const int APP_VERSION = 1;
 
 
- // static const String BASE_URL = "https://kreatif.tobakab.go.id/api/";
+ static const String BASE_URL = "https://kreatif.tobakab.go.id/api/";
 // static const String BASE_URL = "http://192.168.56.1:8000/api/";
-  static const String BASE_URL = "http://127.0.0.1:8000/api/";
+//   static const String BASE_URL = "http://127.0.0.1:8000/api/";
  // static const String BASE_URL = "http://https://a5af-114-5-144-194.ngrok-free.app/api/";
 
 
@@ -24,7 +24,7 @@ class AppConstants {
   static const String DELETE_CHAT_URL = "${BASE_URL}chat/";
 
   // Endpoint untuk mengambil foto merchant
-  static const String MERCHANT_IMAGE_URL = "http://127.0.0.1:8000/storage/";
+  static const String MERCHANT_IMAGE_URL = "https://kreatif.tobakab.go.id/storage/";
   static const String REVIEWS_URL = "${BASE_URL}reviews";
 
 
@@ -40,7 +40,7 @@ class AppConstants {
   static const String UBAH_PASSWORD_URL = "ubahpassword";
   static const String HAPUS_AKUN_URL = "hapusakun";
 
-  static const String TAMBAH_KERANJANG_URL = "tambahkeranjang"; 
+  static const String TAMBAH_KERANJANG_URL = "tambahkeranjang";
   static const String KERANJANG_URL = "keranjang";
   static const String HAPUS_KERANJANG_URL = "hapus";
   static const String KURANG_KERANJANG_URL = "kurang";

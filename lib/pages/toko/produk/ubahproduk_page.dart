@@ -27,39 +27,67 @@ class UbahProdukPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var detailProduk = Get.find<PopularProdukController>().detailProdukList;
-    var NamaProdukController = TextEditingController(text: detailProduk[0].productName);
-    var DeskripsiProdukController = TextEditingController(text: detailProduk[0].productDescription);
-    var HargaController = TextEditingController(text: detailProduk[0].price.toString());
-    var BeratController = TextEditingController(text: detailProduk[0].heavy.toString());
-    var StokController = TextEditingController(text: detailProduk[0].stok.toString());
-    var KategoriController = TextEditingController(text: detailProduk[0].namaKategori.toString());
+
+    // ✅ Cek apakah detailProduk kosong atau belum memiliki 3 gambar
+    if (detailProduk.isEmpty || detailProduk.length < 3) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text("Ubah Produk"),
+          backgroundColor: AppColors.redColor,
+          foregroundColor: Colors.white,
+        ),
+        body: Center(
+          child: detailProduk.isEmpty
+              ? const CircularProgressIndicator()
+              : const Text(
+            "Data produk tidak lengkap",
+            style: TextStyle(color: Colors.black54),
+          ),
+        ),
+      );
+    }
+
+    var NamaProdukController =
+    TextEditingController(text: detailProduk[0].productName);
+    var DeskripsiProdukController =
+    TextEditingController(text: detailProduk[0].productDescription);
+    var HargaController =
+    TextEditingController(text: detailProduk[0].price.toString());
+    var BeratController =
+    TextEditingController(text: detailProduk[0].heavy.toString());
+    var StokController =
+    TextEditingController(text: detailProduk[0].stok.toString());
+    var KategoriController =
+    TextEditingController(text: detailProduk[0].namaKategori.toString());
 
     Future<void> _ubahProduk() async {
       String namaproduk = NamaProdukController.text.trim();
       String deskripsi = DeskripsiProdukController.text.trim();
-      int harga = int.parse(HargaController.text.trim());
-      int berat = int.parse(BeratController.text.trim());
-      int stok = int.parse(StokController.text.trim());
+      int harga = int.tryParse(HargaController.text.trim()) ?? 0;
+      int berat = int.tryParse(BeratController.text.trim()) ?? 0;
+      int stok = int.tryParse(StokController.text.trim()) ?? 0;
       String kategori = KategoriController.text.trim();
 
       if (namaproduk.isEmpty) {
-        AwesomeSnackbarButton("Warning","Nama produk masih kosong",ContentType.warning);
+        AwesomeSnackbarButton("Warning", "Nama produk masih kosong", ContentType.warning);
       } else if (deskripsi.isEmpty) {
-        AwesomeSnackbarButton("Warning","Deskripsi masih kosong",ContentType.warning);
-      } else if (harga == null) {
-        AwesomeSnackbarButton("Warning","Harga masih kosong",ContentType.warning);
-      } else if (stok == null) {
-        AwesomeSnackbarButton("Warning","Stok masih kosong",ContentType.warning);
-      } else if (berat == null) {
-        AwesomeSnackbarButton("Warning","Berat masih kosong",ContentType.warning);
+        AwesomeSnackbarButton("Warning", "Deskripsi masih kosong", ContentType.warning);
+      } else if (harga <= 0) {
+        AwesomeSnackbarButton("Warning", "Harga tidak valid", ContentType.warning);
+      } else if (stok <= 0) {
+        AwesomeSnackbarButton("Warning", "Stok tidak valid", ContentType.warning);
+      } else if (berat <= 0) {
+        AwesomeSnackbarButton("Warning", "Berat tidak valid", ContentType.warning);
       } else if (kategori.isEmpty) {
-        AwesomeSnackbarButton("Warning","Kategori masih kosong",ContentType.warning);
+        AwesomeSnackbarButton("Warning", "Kategori masih kosong", ContentType.warning);
       } else {
         var controller = Get.find<ProdukController>();
         controller
-            .ubahProduk(detailProduk[0].productId, namaproduk, deskripsi, harga,
-            berat, kategori, stok)
-            .then((status) async {});
+            .ubahProduk(
+            detailProduk[0].productId, namaproduk, deskripsi, harga, berat, kategori, stok)
+            .then((status) async {
+          // Tambahkan feedback jika ingin
+        });
       }
     }
 

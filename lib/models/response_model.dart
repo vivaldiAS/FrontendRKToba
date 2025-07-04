@@ -1,7 +1,11 @@
 class ResponseModel {
-  bool _isSuccess;
-  String _message;
-  ResponseModel(this._isSuccess, this._message);
-  String get message => _message;
+  final bool _isSuccess;
+  final String _message;
+  final int? _userId;
+
+  ResponseModel(this._isSuccess, this._message, [this._userId]);
+
   bool get isSuccess => _isSuccess;
+  String get message => _message;
+  int? get userId => _userId;
 }

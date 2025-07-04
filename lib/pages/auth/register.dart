@@ -18,6 +18,7 @@ import '../../widgets/app_date_field.dart';
 import '../../widgets/app_dropdown_field.dart';
 import '../../widgets/app_text_field.dart';
 import '../../widgets/app_text_field_password.dart';
+import '../home/pertanyaan_preferensi.dart';
 
 class Register extends StatelessWidget {
   const Register({Key? key}) : super(key: key);
@@ -107,9 +108,14 @@ class Register extends StatelessWidget {
             gender: gender);
         authController.registrasi(users).then((status) {
           if (status.isSuccess) {
-            AwesomeSnackbarButton("Berhasil", "Akun sudah berhasil di daftar!",
-                ContentType.success);
-            Get.offNamed(RouteHelper.getInitial());
+            AwesomeSnackbarButton("Berhasil", "Akun sudah berhasil di daftar!", ContentType.success);
+
+            if (status.userId != null) {
+              Get.offAll(() => PreferensiPage(userId: status.userId!));
+            } else {
+              // fallback jika userId null
+              Get.snackbar('Error', 'Gagal mendapatkan user ID dari server');
+            }
           } else {
             AwesomeSnackbarButton("Gagal", status.message, ContentType.failure);
           }
@@ -210,11 +216,11 @@ class Register extends StatelessWidget {
                           _registration(_authController);
                         },
                         child: Container(
-                            width: Dimensions.width45 * 3,
+                            width: Dimensions.width45 * 7.5,
                             height: Dimensions.height45,
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(
-                                    Dimensions.radius20 / 2),
+                                    Dimensions.radius20),
                                 color: AppColors.redColor),
                             child: Center(
                               child: BigText(

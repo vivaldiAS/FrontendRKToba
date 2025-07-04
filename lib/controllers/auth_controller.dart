@@ -27,17 +27,23 @@ class AuthController extends GetxController implements GetxService {
     update();
     Response response = await authRepo.registrasi(users);
     late ResponseModel responseModel;
+
     if (response.statusCode == 200) {
+      // Simpan token
       authRepo.saveUserToken(response.body["token"]);
 
+      int? userId;
       if (response.body["user"] != null) {
-        authRepo.saveUserId(response.body["user"]["id"]);
+        userId = response.body["user"]["id"];
+        authRepo.saveUserId(userId!);
       }
 
-      responseModel = ResponseModel(true, response.body["token"]);
+      // ✅ Kirim userId ke ResponseModel
+      responseModel = ResponseModel(true, response.body["token"], userId);
     } else {
       responseModel = ResponseModel(false, response.statusText!);
     }
+
     _isLoading = true;
     update();
     return responseModel;
@@ -55,10 +61,10 @@ class AuthController extends GetxController implements GetxService {
         }
 
         responseModel = ResponseModel(true, response.body["token"]);
-      } else {
-        AwesomeSnackbarButton("Gagal", response.body["message"], ContentType.failure);
-      }
-    } else {
+      }  else {
+      responseModel = ResponseModel(false, response.body["message"] ?? "Gagal login");
+    }
+  } else {
       responseModel = ResponseModel(false, response.statusText!);
     }
     _isLoading = false;
@@ -75,8 +81,11 @@ class AuthController extends GetxController implements GetxService {
   }
 
   bool clearSharedData() {
+    isLoading = false;
+    update(); // penting untuk beri tahu UI
     return authRepo.clearSharedData();
   }
+
 
   int? getUserId() {
     return authRepo.getUserId();

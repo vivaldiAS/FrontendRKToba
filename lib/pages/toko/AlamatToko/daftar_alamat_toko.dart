@@ -54,7 +54,7 @@ class DaftarAlamatTokoPage extends GetView<AlamatController> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Get.to(HomeTokoPage(initialIndex: 3));
+                          Get.back();
                         },
                         child: AppIcon(
                           icon: Icons.arrow_back,

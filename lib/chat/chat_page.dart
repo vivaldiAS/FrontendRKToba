@@ -16,6 +16,7 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   List<dynamic> chatList = [];
   final AuthController authController = Get.find<AuthController>();
+  bool isLoading = true; // Tambahkan flag loading
 
   @override
   void initState() {
@@ -23,24 +24,26 @@ class _ChatPageState extends State<ChatPage> {
     _checkAuthentication();
   }
 
-  // Menambahkan pengecekan autentikasi
   Future<void> _checkAuthentication() async {
     bool _userLoggedIn = await authController.userLoggedIn();
 
     if (!_userLoggedIn) {
-      // Jika pengguna belum login, arahkan ke halaman MasukPage
       Get.off(() => Masuk());
     } else {
-      fetchChats(); // Jika sudah login, ambil data chat
+      fetchChats();
     }
   }
 
   Future<void> fetchChats() async {
+    setState(() {
+      isLoading = true; // Mulai loading
+    });
+
     String authToken = await authController.authRepo.getUserToken();
 
     try {
       final response = await http.get(
-        Uri.parse(AppConstants.BASE_URL + 'chats'), // Ganti dengan konstanta BASE_URL
+        Uri.parse(AppConstants.BASE_URL + 'chats'),
         headers: {
           'Authorization': 'Bearer $authToken',
           'Content-Type': 'application/json',
@@ -52,13 +55,24 @@ class _ChatPageState extends State<ChatPage> {
         if (mounted) {
           setState(() {
             chatList = data['ready_chat'] ?? [];
+            isLoading = false; // Selesai loading
           });
         }
       } else {
         print('Failed to load chats');
+        if (mounted) {
+          setState(() {
+            isLoading = false;
+          });
+        }
       }
     } catch (e) {
       print('Error fetching chats: $e');
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -76,12 +90,14 @@ class _ChatPageState extends State<ChatPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Get.back(); // Navigasi kembali ke halaman sebelumnya
+            Get.back();
           },
         ),
       ),
-      body: chatList.isEmpty
+      body: isLoading
           ? Center(child: CircularProgressIndicator())
+          : chatList.isEmpty
+          ? Center(child: Text("Belum ada pesan"))
           : ListView.builder(
         itemCount: chatList.length,
         itemBuilder: (context, index) {
@@ -91,7 +107,7 @@ class _ChatPageState extends State<ChatPage> {
             chat['latest_message'] ?? 'Waktu Tidak Diketahui',
             chat['latest_message_text'] ?? 'Pesan Tidak Diketahui',
             chat['merchant_id'],
-            chat['foto_merchant'] ?? '', // Ambil foto_merchant
+            chat['foto_merchant'] ?? '',
           );
         },
       ),
