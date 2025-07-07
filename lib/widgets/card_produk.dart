@@ -3,12 +3,17 @@ import 'package:get/get.dart';
 import 'package:rumah_kreatif_toba/widgets/price_text.dart';
 import 'package:rumah_kreatif_toba/widgets/small_text.dart';
 import 'package:rumah_kreatif_toba/widgets/tittle_text.dart';
-
-import '../controllers/popular_produk_controller.dart';
-import '../utils/app_constants.dart';
-import '../utils/colors.dart';
-import '../utils/dimensions.dart';
+import 'package:rumah_kreatif_toba/routes/route_helper.dart';
+import 'package:rumah_kreatif_toba/utils/app_constants.dart';
+import 'package:rumah_kreatif_toba/utils/colors.dart';
+import 'package:rumah_kreatif_toba/utils/dimensions.dart';
 import 'currency_format.dart';
+import 'package:rumah_kreatif_toba/controllers/popular_produk_controller.dart';
+import 'package:rumah_kreatif_toba/controllers/wishlist_controller.dart';
+import 'package:rumah_kreatif_toba/controllers/auth_controller.dart';
+import 'package:rumah_kreatif_toba/base/snackbar_message.dart'; // Import this for AwesomeSnackbarButton
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+
 
 class CardProduk extends StatelessWidget {
   final int product_id;
@@ -43,9 +48,21 @@ class CardProduk extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final wishlistController = Get.find<WishlistController>();
+    final authController = Get.find<AuthController>();
+
     Future<void> _getProdukList(int product_id) async {
       var controller = Get.find<PopularProdukController>();
       controller.detailProduk(product_id).then((status) async {});
+    }
+
+    int _getWishlistIdByProductId(int productId) {
+      for (var item in wishlistController.wishlistList) {
+        if (item.productId == productId) {
+          return item.wishlistId!;
+        }
+      }
+      return -1; // Jika tidak ditemukan, return -1
     }
 
     // Debug: Menampilkan URL gambar yang akan digunakan
@@ -56,11 +73,11 @@ class CardProduk extends StatelessWidget {
     print('Product Image URL: $imageUrl');
 
     return Container(
-      width: Dimensions.width45 * 3.5,
-      height: Dimensions.height45 * 6,
+      width: Dimensions.width45 * 3.75,
+      height: Dimensions.height45 * 7,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.3),
@@ -71,7 +88,7 @@ class CardProduk extends StatelessWidget {
         ],
       ),
       margin: EdgeInsets.only(
-        left: Dimensions.width10/2,
+        left: Dimensions.width10 / 2,
         right: Dimensions.width10,
         bottom: Dimensions.height45,
         top: Dimensions.height10,
@@ -87,8 +104,8 @@ class CardProduk extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(Dimensions.radius15),
-                    topRight: Radius.circular(Dimensions.radius15),
+                    topLeft: Radius.circular(0),
+                    topRight: Radius.circular(0),
                   ),
                   child: SizedBox(
                     height: 130,
@@ -108,10 +125,34 @@ class CardProduk extends StatelessWidget {
                 Positioned(
                   top: 8,
                   right: 8,
-                  child: Icon(
-                    Icons.favorite_border,
-                    color: Colors.grey,
-                    size: 20,
+                  child: GestureDetector(
+                    onTap: () {
+                      if (authController.userLoggedIn()) {
+                        bool isFavorit = wishlistController.getcheckedtypeWishlist[product_id] ?? false;
+
+                        // Set wishlist status
+                        wishlistController.setTypeWishlist(product_id, !isFavorit);
+
+                        if (!isFavorit) {
+                          // Tambahkan produk ke wishlist
+                          wishlistController.tambahWishlist(authController.getUserId()!, product_id);
+                        } else {
+                          // Dapatkan wishlistId dan hapus produk dari wishlist
+                          int wishlistId = _getWishlistIdByProductId(product_id);
+                          if (wishlistId != -1) {
+                            wishlistController.hapusWishlist(wishlistId);
+                          } else {
+                            print('Error: Wishlist ID tidak ditemukan untuk produk ID $product_id');
+                          }
+                        }
+                      } else {
+                        Get.toNamed(RouteHelper.getMasukPage());
+                      }
+                    },
+                    child: Obx(() => wishlistController.getcheckedtypeWishlist[product_id] ?? false
+                        ? Icon(Icons.favorite, color: Colors.pink)
+                        : Icon(Icons.favorite_border, color: Colors.grey),
+                    ),
                   ),
                 ),
               ],

@@ -309,6 +309,33 @@
                       SizedBox(
                         height: Dimensions.height20,
                       ),
+                      // Menghapus kondisi Platform.isIOS dan kIsWeb untuk menampilkan menu "Hapus Akun" di semua platform
+                      GestureDetector(
+                        onTap: () async {
+                          showConfirmPopUp(
+                            title: "Yakin ingin menghapus akun?",
+                            subTitle:
+                            "Setelah menghapus akun, seluruh data akan dihapus dari aplikasi dan tidak dapat dipulihkan termasuk riwayat transaksi, foto profil, dll",
+                            onAccept: () {
+                              Get.find<UserController>().hapusAkun();
+                            },
+                            onCancel: () => Get.back(),
+                          );
+                        },
+                        child: AccountWidget(
+                          appIcon: AppIcon(
+                            icon: Icons.delete_forever,
+                            backgroundColor: Colors.white.withOpacity(0.0),
+                            iconColor: AppColors.redColor,
+                            iconSize: Dimensions.height10 * 5 / 2,
+                            size: Dimensions.height10 * 5,
+                          ),
+                          bigText: BigText(
+                            text: "Hapus Akun",
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: Dimensions.height20),
 
                       // Keluar Section
                       GestureDetector(

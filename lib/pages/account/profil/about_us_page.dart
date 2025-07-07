@@ -26,9 +26,9 @@ class TentangKamiPage extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        // Mengganti warna AppBar menjadi putih
-        backgroundColor: Colors.white, // Warna latar belakang putih
-        iconTheme: const IconThemeData(color: Colors.black), // Warna ikon hitam
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        foregroundColor: Colors.black,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),

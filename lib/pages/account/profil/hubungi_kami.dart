@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';  // Import url_launcher
 import '../../../utils/dimensions.dart';
 import '../../../utils/colors.dart';
 
 class HubungiKamiPage extends StatelessWidget {
   const HubungiKamiPage({Key? key}) : super(key: key);
+
+  // Fungsi untuk membuka Gmail di browser dengan subjek dan body otomatis terisi
+  Future<void> _sendEmail() async {
+    final String emailUrl = Uri.encodeFull(
+        'https://mail.google.com/mail/?view=cm&fs=1&to=kreatiftoba@gmail.com&su=Tanya+tentang+Produk+UMKM+TOBA&body=Tulis+pesan+Anda+di+sini...');
+
+    try {
+      // Memeriksa apakah URL dapat dibuka
+      if (await canLaunch(emailUrl)) {
+        await launch(emailUrl);  // Membuka Gmail di browser dengan subjek dan body yang sudah terisi
+      } else {
+        debugPrint('Tidak dapat membuka URL: $emailUrl');
+      }
+    } catch (e) {
+      debugPrint('Error membuka Gmail: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +55,7 @@ class HubungiKamiPage extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             GestureDetector(
-              onTap: () {
-                // Aksi ketika tombol ditekan, bisa diarahkan ke email atau form
-              },
+              onTap: _sendEmail,  // Panggil fungsi untuk membuka Gmail
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
                 decoration: BoxDecoration(

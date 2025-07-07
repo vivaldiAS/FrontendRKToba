@@ -9,6 +9,7 @@ import '../base/snackbar_message.dart';
 import '../models/response_model.dart';
 import '../utils/app_constants.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import '../../routes/route_helper.dart';
 
 import 'auth_controller.dart';
 class WishlistController extends GetxController{
@@ -43,24 +44,32 @@ class WishlistController extends GetxController{
     return responseModel;
   }
 
-  Future<void> getWishlistList() async{
+  Future<void> getWishlistList() async {
+    _isLoading = true;
+    update();
+
     if (Get.find<AuthController>().userLoggedIn()) {
       var controller = Get.find<UserController>().usersList[0];
       Response response = await wishlistRepo.getWishlistList(controller.id!);
-      if(response.statusCode == 200){
+
+      if (response.statusCode == 200) {
         List<dynamic> responseBody = response.body;
-        _wishlistList.value = [].obs;
+        _wishlistList.value = [];
         for (dynamic item in responseBody) {
           WishlistModel wishlist = WishlistModel.fromJson(item);
           _wishlistList.add(wishlist);
         }
-        _isLoading = true;
-        update();
-      }else{
-
+      } else {
+        _wishlistList.value = [];
       }
-    }
 
+      _isLoading = false;
+      update();
+    } else {
+      _wishlistList.value = [];
+      _isLoading = false;
+      update();
+    }
   }
 
   Future<ResponseModel> hapusWishlist(int wishlist_id) async {
@@ -84,6 +93,41 @@ class WishlistController extends GetxController{
 
   void setTypeWishlist(int index, bool title) {
     checkedtypeWishlist[index] = title;
+    update();
+  }
+
+  /// Fungsi baru hapus wishlist berdasarkan product_id
+  Future<ResponseModel> hapusWishlistByProductId(int product_id) async {
+    // Cari item wishlist berdasarkan product_id
+    var item = wishlistList.firstWhereOrNull((element) => element.productId == product_id);
+    if (item == null) {
+      return ResponseModel(false, "Wishlist item tidak ditemukan");
+    }
+
+    // Panggil hapusWishlist lama dengan wishlistId
+    return await hapusWishlist(item.wishlistId!);
+  }
+
+  /// Metode toggle wishlist, gunakan fungsi baru hapusWishlistByProductId
+  Future<void> toggleWishlist(int product_id) async {
+    bool isFavorit = checkedtypeWishlist[product_id] ?? false;
+
+    if (!isFavorit) {
+      int? userId = Get.find<AuthController>().getUserId();
+      if (userId == null) {
+        Get.toNamed(RouteHelper.getMasukPage());
+        return;
+      }
+      ResponseModel res = await tambahWishlist(userId, product_id);
+      if (res.isSuccess) {
+        checkedtypeWishlist[product_id] = true;
+      }
+    } else {
+      ResponseModel res = await hapusWishlistByProductId(product_id);
+      if (res.isSuccess) {
+        checkedtypeWishlist[product_id] = false;
+      }
+    }
     update();
   }
 }

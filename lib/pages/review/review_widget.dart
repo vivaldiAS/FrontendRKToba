@@ -81,22 +81,7 @@ if (reviews.isNotEmpty) Padding(
           ),
         ],
       ),
-      if (reviews.length > 2)
-        GestureDetector(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (_) => buildReviewDialog(),
-            );
-          },
-          child: const Text(
-            'Lihat Semua >',
-            style: TextStyle(
-                color: Colors.blue,
-                fontSize: 14,
-                fontWeight: FontWeight.w500),
-          ),
-        ),
+
     ],
   ),
 ),

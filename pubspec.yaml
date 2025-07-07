@@ -45,7 +45,9 @@ dependencies:
   shared_preferences: ^2.0.8
   awesome_snackbar_content: ^0.1.1
   url_launcher: ^6.1.10
-  font_awesome_flutter: ^10.7.0  # <--- tambahkan ini
+  font_awesome_flutter: ^10.7.0
+  flutter_email_sender: ^5.0.2
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -101,6 +103,9 @@ flutter:
   - assets/images/logo_rkt.png
   - assets/images/Bangga_Buatan_Indonesia_Logo.png
   - assets/images/toba.png
+  - assets/images/favoritkosong.png
+  - assets/images/ktp.png
+  - assets/images/selfiektp.png
 
   - assets/images/beranda/FashionPria.png
   - assets/images/beranda/FashionWanita.png

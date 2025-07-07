@@ -482,7 +482,6 @@ class _ProdukDetailState extends State<ProdukDetail> {
                             itemBuilder: (context, index) {
                               final produk = produkSerupa[index];
 
-                              // Gunakan fallback untuk imageName
                               String imageName = 'default.jpg';
                               final matched = produkKategori.imageProdukList.firstWhere(
                                     (img) => img.productId == produk.productId,
@@ -492,21 +491,13 @@ class _ProdukDetailState extends State<ProdukDetail> {
                                 imageName = matched.productImageName;
                               }
 
-                              return GestureDetector(
-                                onTap: () {
-                                  Get.to(
-                                        () => ProdukDetail(),
-                                    arguments: {'product': produk}, // Pastikan data produk dikirim
-                                  );
-                                },
-                                child: CardProduk(
-                                  product_id: produk.productId,
-                                  productImageName: imageName,
-                                  productName: produk.productName,
-                                  merchantAddress: produk.subdistrictName,
-                                  price: produk.price,
-                                  countPurchases: produk.countProductPurchases,
-                                ),
+                              return CardProduk(
+                                product_id: produk.productId,
+                                productImageName: imageName,
+                                productName: produk.productName,
+                                merchantAddress: produk.subdistrictName,
+                                price: produk.price,
+                                countPurchases: produk.countProductPurchases,
                               );
                             },
                           ),

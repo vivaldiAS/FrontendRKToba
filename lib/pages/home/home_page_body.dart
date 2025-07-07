@@ -12,6 +12,8 @@ import 'package:rumah_kreatif_toba/widgets/price_text.dart';
 import 'package:rumah_kreatif_toba/widgets/small_text.dart';
 import 'package:rumah_kreatif_toba/widgets/tittle_text.dart';
 import 'package:rumah_kreatif_toba/widgets/carousel_widget.dart';
+import 'package:rumah_kreatif_toba/pages/kategori/kategori_produk.dart';
+
 
 import '../../utils/dimensions.dart';
 import '../../widgets/card_kategori.dart';
@@ -80,7 +82,7 @@ class _HomePageBodyState extends State<HomePageBody> {
             ),
             GestureDetector(
               onTap: () {
-                Get.to(ProdukUnggulanPage());
+                Get.to(KategoriProduk());
               },
               child: Container(
                   width: Dimensions.screenWidth / 4,
@@ -126,7 +128,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                       SizedBox(width: 10),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => HomePage(initialIndex: 1));
+                          Get.to(() => KategoriProduk());
                         },
                         child: Container(
                           width: 90,
